@@ -10,16 +10,16 @@ class database{
  
     }
  
-    function signupUser($firstname, $lastname, $username, $password) {
+    function signupUser($firstname, $lastname, $username, $email, $password) {
 
         $con = $this->opencon();
 
         try{
             $con->beginTransaction();
-            $stmt = $con->prepare("INSERT INTO admin (admin_FN, admin_LN, admin_username, admin_password) VALUES (?,?,?,?)");  
+            $stmt = $con->prepare("INSERT INTO admin (admin_FN, admin_LN, admin_username, admin_email, admin_password) VALUES (?,?,?,?,?)");  
 
            
-        $stmt->execute([$firstname, $lastname, $username, $password]);
+        $stmt->execute([$firstname, $lastname, $username, $email, $password]);
         echo 'jei';
         $userID = $con->lastInsertId();
         $con->commit();
@@ -39,5 +39,13 @@ class database{
         $count = $stmt->fetchColumn();
         return $count > 0;
 
+}
+function isEmailExists($email){
+    $con = $this->opencon();
+
+    $stmt =$con->prepare("SELECT COUNT(*) FROM Admin WHERE admin_email = ?");
+    $stmt->execute([$email]);
+    $count = $stmt->fetchColumn();
+    return $count > 0;
 }
     }
